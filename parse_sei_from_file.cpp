@@ -53,13 +53,13 @@ int main()
             }
             if (start < next)
             {
-                uint8_t nal_unit_type = (buffer[start] & 0x7E) >> 1; // H265
-                if (isSEINalu(nal_unit_type, true))
+                uint8_t nal_unit_type = (buffer[start] & 0x7E) >> 1; 
+                if (isSEINalu(nal_unit_type, true))  // H.265 NALU 类型，如果是 H.264 则改为 false
                 {
                     std::vector<uint8_t> nalu(buffer.begin() + pos, buffer.begin() + next);
                     // 解析并写入CSV
                     SEIMetadata meta;
-                    ExtractSEIMetadata(nalu, 39, meta, csvFilePath);
+                    ExtractSEIMetadata(nalu, 39, meta, csvFilePath);  // 39 是 H.265 的 NALU 类型，如果是 H.264 则改为 6
                 }
             }
             pos = next;
