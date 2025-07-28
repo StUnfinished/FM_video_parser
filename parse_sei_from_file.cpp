@@ -19,14 +19,23 @@ std::string getCsvFileName(const std::string& h265FilePath) {
     return outputPath.string();  // 返回完整路径字符串
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    const char* filePath = "/home/nighthe/video/FM_20250611_081129515_1588900.h265";
-    std::string csvFilePath = getCsvFileName(filePath);
-    std::ifstream file(filePath, std::ios::binary);
+    if (argc < 2) {
+        std::cout << "Usage: ./parse_sei_from_file input.h265|rtmp_url" << std::endl;
+        return -1;
+    }
+    std::string inputPath = argv[1];
+    bool isRTMP = (inputPath.find("rtmp://") == 0);
+    if (isRTMP) {
+        std::cout << "警告: RTMP流暂不支持SEI元数据解析，仅支持本地文件。" << std::endl;
+        return 0;
+    }
+    std::string csvFilePath = getCsvFileName(inputPath);
+    std::ifstream file(inputPath, std::ios::binary);
     if (!file)
     {
-        std::cerr << "无法打开文件: " << filePath << std::endl;
+        std::cerr << "无法打开文件: " << inputPath << std::endl;
         return -1;
     }
 
@@ -53,13 +62,13 @@ int main()
             }
             if (start < next)
             {
-                uint8_t nal_unit_type = (buffer[start] & 0x7E) >> 1; 
-                if (isSEINalu(nal_unit_type, true))  // H.265 NALU 类型，如果是 H.264 则改为 false
+                uint8_t nal_unit_type = (buffer[start] & 0x7E) >> 1; // H265
+                if (isSEINalu(nal_unit_type, true))
                 {
                     std::vector<uint8_t> nalu(buffer.begin() + pos, buffer.begin() + next);
                     // 解析并写入CSV
                     SEIMetadata meta;
-                    ExtractSEIMetadata(nalu, 39, meta, csvFilePath);  // 39 是 H.265 的 NALU 类型，如果是 H.264 则改为 6
+                    ExtractSEIMetadata(nalu, 39, meta, csvFilePath);
                 }
             }
             pos = next;

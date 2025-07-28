@@ -7,7 +7,28 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(PkgConfig REQUIRED)
 
 # FFmpeg 相关
-pkg_check_modules(AV REQUIRED libavformat libavcodec libavutil libswscale)
+# pkg_check_modules(AV REQUIRED libavformat libavcodec libavutil libswscale)
+pkg_check_modules(AVFORMAT REQUIRED libavformat)
+pkg_check_modules(AVCODEC REQUIRED libavcodec)
+pkg_check_modules(AVUTIL REQUIRED libavutil)
+pkg_check_modules(SWSCALE REQUIRED libswscale)
+
+include_directories(
+    ${AVFORMAT_INCLUDE_DIRS}
+    ${AVCODEC_INCLUDE_DIRS}
+    ${AVUTIL_INCLUDE_DIRS}
+    ${SWSCALE_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+    ${EXIV2_INCLUDE_DIR}
+)
+
+link_directories(
+    ${AVFORMAT_LIBRARY_DIRS}
+    ${AVCODEC_LIBRARY_DIRS}
+    ${AVUTIL_LIBRARY_DIRS}
+    ${SWSCALE_LIBRARY_DIRS}
+)
 
 # 其他依赖
 find_package(OpenCV REQUIRED)
@@ -49,5 +70,9 @@ target_link_libraries(parse_and_tag
     ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY}
     ${EXIV2_LIBRARY}
     ${AV_LIBRARIES}
+    ${AVFORMAT_LIBRARIES}
+    ${AVCODEC_LIBRARIES}
+    ${AVUTIL_LIBRARIES}
+    ${SWSCALE_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
 )
