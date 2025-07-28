@@ -10,28 +10,45 @@
 - **用途**：为其他模块提供 SEI 数据解析能力。
 
 ### 2. parse_sei_from_file.cpp
-- **功能**：从 H.265 或 H.264 视频流文件中批量提取 SEI NALU，解析外方位元素，并保存为 CSV 文件。
-- **典型用法**：
+- **功能**：从 H.265/H.264 本地文件或 RTMP 流中批量提取 SEI NALU，解析外方位元素，并保存为 CSV 文件。
+- **用法**：
   ```bash
+  # 本地文件：
   ./parse_sei_from_file input.h265
+  # RTMP流：
+  ./parse_sei_from_file rtmp://your_stream_url
+  # 例如： ./parse_sei_from_file rtmp://192.168.1.212:19935/live/uav
   # 输出 CSV 文件路径可在代码中自定义
   ```
 
 ### 3. get_image_from_stream.cpp
-- **功能**：从视频流中提取影像帧，每隔 x 帧保存一张图片，并将 CSV 中的外方位元素写入对应影像的 EXIF/XMP。
+- **功能**：从本地视频文件或 RTMP 流中提取影像帧，每隔 x 帧保存一张图片，并将 CSV 中的外方位元素写入对应影像的 EXIF/XMP。
 - **用法**：
   ```bash
+  # 本地文件：
   ./get_image_from_stream input.h265 sei_meta.csv x [output_dir]
   # 例如： ./get_image_from_stream input.h265 pos_file.csv 25 output_images
+  # RTMP流：
+  ./get_image_from_stream rtmp://your_stream_url sei_meta.csv x [output_dir]
+  # 例如： ./get_image_from_stream rtmp://192.168.1.212:19935/live/uav pos_file.csv 25 output_images
   ```
 
 ### 4. parser_and_tag.cpp
-- **功能**：一体化流程。自动从视频流中提取 SEI 元数据并保存为 CSV，同时每隔 x 帧保存一张图片并写入 EXIF/XMP 元数据。
+- **功能**：一体化流程。自动从本地 H.265 文件或 RTMP 流中提取 SEI 元数据并保存为 CSV，同时每隔 x 帧保存一张图片并写入 EXIF/XMP 元数据。
+  - 支持本地文件和 RTMP 流自动识别。
+  - RTMP流模式下，使用 FFmpeg API 实时提取 SEI 并顺序缓存，OpenCV 保存帧，帧与 SEI 顺序对齐写入 EXIF。
+  - 本地文件模式下，流程与以往一致。
 - **用法**：
   ```bash
-  ./parser_and_tag input.h265 output.csv x output_dir
+  # 本地文件：
+  ./parser_and_tag input.h265 sei_meta.csv x [output_dir]
   # 例如： ./parser_and_tag input.h265 pos_file.csv 25 output_images
+  # RTMP流：
+  ./parser_and_tag rtmp://your_stream_url sei_meta.csv x [output_dir]
+  # 例如： ./parser_and_tag rtmp://192.168.1.212:19935/live/uav pos_file.csv 25 output_images
+  # 结果：output.csv 保存所有 SEI 元数据，output_images/ 下为带有 EXIF 的影像帧（帧与 SEI 顺序对齐）
   ```
+  - **同步方式说明**：帧与 SEI 按顺序一一对应（即第N个SEI用于第N个保存的影像帧EXIF写入）。
 
 ### 5. extract_and_tag.cpp
 - **功能**：基于 FFmpeg/Exiv2 实现的高阶一体化处理，支持更底层的视频解码和元数据写入。
@@ -55,8 +72,11 @@ make -j
 ## 典型使用流程
 1. **一体化处理（推荐）**
    ```bash
+   # 本地文件：
    ./parser_and_tag input.h265 output.csv 25 output_images
-   # 结果：output.csv 保存所有 SEI 元数据，output_images/ 下为带有 EXIF 的影像帧
+   # RTMP流：
+   ./parser_and_tag rtmp://your_stream_url output.csv 25 output_images
+   # 结果：output.csv 保存所有 SEI 元数据，output_images/ 下为带有 EXIF 的影像帧（顺序对齐）
    ```
 2. **分步处理**
    - 先提取 SEI 元数据：

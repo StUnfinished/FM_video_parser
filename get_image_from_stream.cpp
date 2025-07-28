@@ -44,7 +44,8 @@ void writeExif(const std::string& path, const SEIMetadata& meta) {
 
 int main(int argc, char** argv) {
     if (argc < 4) {
-        std::cout << "Usage: ./decode_h265_save input.h265 sei_meta.csv x [output_dir]" << std::endl;
+        std::cout << "Usage: ./decode_h265_save input.h265|rtmp_url sei_meta.csv x [output_dir]" << std::endl;
+        std::cout << "支持本地文件或rtmp流作为输入" << std::endl;
         return -1;
     }
 
@@ -73,9 +74,17 @@ int main(int argc, char** argv) {
         seiMetas.push_back(meta);
     }
 
-    cv::VideoCapture cap(videoPath);
+    // 判断输入是本地文件还是rtmp流
+    bool isRtmp = (videoPath.find("rtmp://") == 0);
+    cv::VideoCapture cap;
+    if (isRtmp) {
+        std::cout << "打开RTMP流: " << videoPath << std::endl;
+        cap.open(videoPath, cv::CAP_FFMPEG);
+    } else {
+        cap.open(videoPath);
+    }
     if (!cap.isOpened()) {
-        std::cerr << "Error: Could not open video file: " << videoPath << std::endl;
+        std::cerr << "Error: Could not open video: " << videoPath << std::endl;
         return -1;
     }
 
