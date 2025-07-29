@@ -44,7 +44,7 @@ void writeExif(const std::string& path, const SEIMetadata& meta) {
 
 int main(int argc, char** argv) {
     if (argc < 4) {
-        std::cout << "Usage: ./decode_h265_save input.h265|rtmp_url sei_meta.csv x [output_dir]" << std::endl;
+        std::cout << "Usage: ./get_image_from_stream input.h265|rtmp_url sei_meta.csv x [output_dir]" << std::endl;
         std::cout << "支持本地文件或rtmp流作为输入" << std::endl;
         return -1;
     }
