@@ -1,7 +1,7 @@
 # FM_video_parser 项目说明
 
 ## 项目简介
-本项目用于从 H.265 视频流中批量提取影像帧，并自动解析 SEI 数据，将外方位元素（如经纬度、高程、姿态角等）写入影像的 EXIF/XMP 元数据或保存为 CSV 文件，适用于无人机航摄、遥感等场景。
+本项目用于从 H.265/H.264 视频流中批量提取影像帧，并自动解析 SEI 数据，将外方位元素（如经纬度、高程、姿态角等）写入影像的 EXIF/XMP 元数据或保存为 CSV 文件，适用于无人机航摄、遥感等场景。
 
 ## 主要功能模块
 
@@ -60,6 +60,22 @@
 - Exiv2
 - FFmpeg (libavformat, libavcodec, libavutil, libswscale)
 - C++14 及以上
+
+### FFmpeg安装方法
+#### 安装步骤
+```bash
+# 下载最新静态版本（x86_64 Linux）
+wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+tar -xf ffmpeg-release-amd64-static.tar.xz
+cd ffmpeg-*-static
+sudo cp ffmpeg /usr/local/bin/
+sudo cp ffprobe /usr/local/bin/
+```
+#### 验证安装：
+```bash
+ffmpeg -version
+```
+然后在编译你项目时**只链接 FFmpeg 的 .so/.a 文件或通过命令行调用解码器**。
 
 ## 编译方法
 ```bash
