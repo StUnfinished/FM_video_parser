@@ -70,7 +70,6 @@ make -j
 - `parse_sei_from_file.cpp`：SEI 批量提取
 - `get_image_from_stream.cpp`：影像帧提取+EXIF写入
 - `parser_and_tag.cpp`：一体化流程
-- `extract_and_tag.cpp`：FFmpeg底层解码+EXIF写入
 - `CMakeLists.txt`：项目构建配置
 
 ## 注意事项
