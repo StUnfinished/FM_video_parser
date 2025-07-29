@@ -33,7 +33,7 @@
   # 例如： ./get_image_from_stream rtmp://192.168.1.212:19935/live/uav pos_file.csv 25 output_images
   ```
 
-### 4. parser_and_tag.cpp
+### 4. parse_and_tag.cpp
 - **功能**：一体化流程。自动从本地 H.265 文件或 RTMP 流中提取 SEI 元数据并保存为 CSV，同时每隔 x 帧保存一张图片并写入 EXIF/XMP 元数据。
   - 支持本地文件和 RTMP 流自动识别。
   - RTMP流模式下，使用 FFmpeg API 实时提取 SEI 并顺序缓存，OpenCV 保存帧，帧与 SEI 顺序对齐写入 EXIF。
