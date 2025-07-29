@@ -109,8 +109,7 @@ make -j
 - `sei_parser.h/cpp`：SEI 解析核心
 - `parse_sei_from_file.cpp`：SEI 批量提取
 - `get_image_from_stream.cpp`：影像帧提取+EXIF写入
-- `parser_and_tag.cpp`：一体化流程
-- `extract_and_tag.cpp`：FFmpeg底层解码+EXIF写入
+- `parser_and_tag.cpp`：SEI批量提取+影像帧提取+EXIF写入 一体化流程
 - `CMakeLists.txt`：项目构建配置
 
 ## 注意事项
