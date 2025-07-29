@@ -33,10 +33,6 @@
   # 例如： ./parser_and_tag input.h265 pos_file.csv 25 output_images
   ```
 
-### 5. extract_and_tag.cpp
-- **功能**：基于 FFmpeg/Exiv2 实现的高阶一体化处理，支持更底层的视频解码和元数据写入。
-- **适合需要自定义解码流程的高级用户。**
-
 ## 依赖环境
 - OpenCV
 - Boost (filesystem, system)
